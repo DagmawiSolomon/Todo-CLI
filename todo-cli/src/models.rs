@@ -27,5 +27,5 @@ struct Task{
     pub prority: String,
     pub due_date: String,
     pub category:Category,
-    pub tags: Tag,
+    pub tags: Vec<Tag>,
 }
