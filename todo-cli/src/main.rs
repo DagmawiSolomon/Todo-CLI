@@ -12,7 +12,7 @@ struct addflags{
 struct Add{
     command: String,
     title: String,
-    flags: addflags,
+    flags: String,
 
 }
 fn main() {
