@@ -1,3 +1,5 @@
+use core::task;
+
 use rusqlite::{Connection, Result};
 use crate::models;
 
@@ -77,8 +79,25 @@ pub fn create_tables() -> Result<()> {
 
 pub fn add_task(task:models::Task) -> Result<()>{
     let con = Connection::open("todocli.db")?;
-    con.execute("INSERT INTO \"Color\" (Red, Green, Blue) VALUES (?1, ?2, ?3);", [255, 255, 255])?;
+    // let color_id = add_color(&con);
+    let status_id = add_status(&con, task);
+    // println!("{}", color_id);
     Ok(())
 
 }
 
+
+pub fn add_color(con : &Connection) -> i64{
+    con.execute("INSERT INTO Color (Red, Green, Blue) VALUES (?1, ?2, ?3);", [255, 255, 255])
+    .expect("Troubel Creating COlor");
+
+    con.last_insert_rowid()
+
+    
+}
+
+pub fn add_status(con:&Connection, task: models::Task){
+    con.execute("INSERT INTO STATUS (title)", &[&task.title]).expect("Troubel Creating status");
+
+    con.last_insert_rowid();
+}
