@@ -1,16 +1,20 @@
 use structopt::StructOpt;
 
 #[derive(Debug, StructOpt)]
-enum Command {
+pub enum Command {
     add {
         #[structopt(help = "Description of the task")]
         task: String,
+        #[structopt(long, help = "Description of task")]
+        description: Option<String>,
         #[structopt(short, long, help = "Deadline of task")]
         due: Option<String>,
         #[structopt(short, long, help = "Level of priority: low, medium, high")]
         priority: Option<String>,
         #[structopt(short, long, help = "Category of task")]
         category: Option<String>,
+        #[structopt(short, long, help = "Emoji for category")]
+        emoji: Option<String>,
         #[structopt(short, long, help = "Tags for task")]
         tags: Vec<String>,
     },
@@ -59,5 +63,5 @@ enum Command {
 #[structopt(name="Fundamentals", author = "Dagmawi Solomon", about= "I am a simple CLI to teach you the fundamentals")]
 pub struct Args {
     #[structopt(subcommand)]
-    commands: Command,
+    pub commands: Command,
 }
