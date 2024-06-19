@@ -6,7 +6,13 @@ mod args;
 mod models;
 mod database;
 fn main() {
-    database::create_tables().expect("Error Creating Database Tables");
+   
+    let create_dbtables = database::create_tables();
+    match create_dbtables {
+    Err(err) => panic!("Error creating database: {}", err),
+    _ => (),
+    }
+
     let args = args::Args::from_args();
     match args.commands {
         args::Command::add {task,due,description,priority,category,emoji,tags} =>{
@@ -34,7 +40,7 @@ fn main() {
                         None => " ".to_string(),
                         Some(x) => x,
                     },
-                    color: models::Color(0,0,0),
+                    color: "#323031".to_string(),
                     emoji: match emoji{
                         None => " ".to_string(),
                         Some(x) => x,
