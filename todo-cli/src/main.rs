@@ -6,7 +6,7 @@ mod args;
 mod models;
 mod database;
 fn main() {
-    database::create_tables();
+    database::create_tables().expect("Error Creating Database Tables");
     let args = args::Args::from_args();
     match args.commands {
         args::Command::add {task,due,description,priority,category,emoji,tags} =>{
