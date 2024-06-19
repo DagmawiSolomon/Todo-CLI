@@ -1,8 +1,6 @@
 use chrono::{DateTime, Utc};
 
 #[derive(Debug)]
-pub struct Color(pub i64,pub i64, pub i64);
-#[derive(Debug)]
 pub struct Status{
     pub title:String,
     // color: Color
@@ -12,27 +10,27 @@ pub struct Status{
 #[derive(Debug)]
 pub struct Category{
     pub title:String,
-    pub color: Color,
+    pub color: String,
     pub emoji: String,
 }
 #[derive(Debug)]
 pub struct Tag{
     pub title: String,
-    pub color: Color,
+    pub color: String,
 }
 
-impl Tag{
-    pub fn new(tags: Vec<String>) -> Vec<Tag>{
-        let mut list: Vec<Tag> = Vec::new();
-        for tag in tags{
-            list.push(Tag{
-                title: tag,
-                color: Color(0,0,0),
-            })
-        }
-        list
-    } 
-}
+// impl Tag{
+//     pub fn new(tags: Vec<String>) -> Vec<Tag>{
+//         let mut list: Vec<Tag> = Vec::new();
+//         for tag in tags{
+//             list.push(Tag{
+//                 title: tag,
+//                 color: "#323031",
+//             })
+//         }
+//         list
+//     } 
+// }
 
 #[derive(Debug)]
 pub struct Task{
