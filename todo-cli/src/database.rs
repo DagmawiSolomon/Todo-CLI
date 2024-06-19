@@ -1,6 +1,6 @@
 use core::task;
 
-use rusqlite::{Connection, Result};
+use rusqlite::{ffi::Error, Connection, Result};
 use crate::models;
 
 pub fn create_tables() -> Result<()> {
@@ -19,8 +19,17 @@ pub fn create_tables() -> Result<()> {
     conn.execute(
         "CREATE TABLE IF NOT EXISTS Status (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT DEFAULT 'Not Started'
+            title TEXT NOT NULL UNIQUE
          )",
+        [],
+    )?;
+
+    conn.execute(
+        "INSERT OR IGNORE INTO Status (title) VALUES 
+        ('Pending'), 
+        ('Not Started'), 
+        ('In Progress'), 
+        ('Completed')",
         [],
     )?;
 
@@ -80,7 +89,7 @@ pub fn create_tables() -> Result<()> {
 pub fn add_task(task:models::Task) -> Result<()>{
     let con = Connection::open("todocli.db")?;
     // let color_id = add_color(&con);
-    let status_id = add_status(&con, task);
+    add_status(&con, task);
     // println!("{}", color_id);
     Ok(())
 
@@ -96,8 +105,16 @@ pub fn add_color(con : &Connection) -> i64{
     
 }
 
-pub fn add_status(con:&Connection, task: models::Task){
-    con.execute("INSERT INTO STATUS (title)", &[&task.title]).expect("Troubel Creating status");
 
-    con.last_insert_rowid();
+pub fn add_status(con: &Connection, task: models::Task) -> Result<i64, rusqlite::Error> {
+    let status: Result<usize, rusqlite::Error> = con.execute(
+        "INSERT INTO Status (title) VALUES (?1)",
+        &[&task.title],
+    );
+
+    match status {
+        Ok(_) => Ok(con.last_insert_rowid()),
+        Err(err) => Err(err),
+    }
 }
+
