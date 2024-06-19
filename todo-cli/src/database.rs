@@ -89,7 +89,8 @@ pub fn create_tables() -> Result<()> {
 pub fn add_task(task:models::Task) -> Result<()>{
     let con = Connection::open("todocli.db")?;
     // let color_id = add_color(&con);
-    add_status(&con, task);
+    // let status_id = add_status(&con, task);
+    let status_id = get_status(&con, &task.status);
     // println!("{}", color_id);
     Ok(())
 
@@ -117,4 +118,19 @@ pub fn add_status(con: &Connection, task: models::Task) -> Result<i64, rusqlite:
         Err(err) => Err(err),
     }
 }
+
+pub fn get_status(con: &Connection, status: &models::Status) -> Result<i32> {
+    let mut stmt = con.prepare("SELECT id FROM Status WHERE UPPER(title) == UPPER(?1)")?;
+    let mut rows = stmt.query(&[&status.title])?;
+
+    if let Some(row) = rows.next()? {
+        let id: i32 = row.get(0)?;
+        println!("{}",id);
+        Ok(id)
+    } else {
+        Err(rusqlite::Error::QueryReturnedNoRows)
+        
+    }
+}
+
 
