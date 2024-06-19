@@ -1,20 +1,13 @@
 use core::task;
 
 use rusqlite::{ffi::Error, Connection, Result};
-use crate::models;
+use crate::models::{self, Category};
 
 pub fn create_tables() -> Result<()> {
     let conn = Connection::open("todocli.db")?;
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS Color (
-             id INTEGER PRIMARY KEY AUTOINCREMENT,
-             Red INTEGER NOT NULL,
-             Green INTEGER NOT NULL,
-             Blue INTEGER NOT NULL
-         )",
-        [],
-    )?;
+    // Enable foreign key constraints
+    conn.execute("PRAGMA foreign_keys = ON", [])?;
 
     conn.execute(
         "CREATE TABLE IF NOT EXISTS Status (
@@ -37,9 +30,8 @@ pub fn create_tables() -> Result<()> {
         "CREATE TABLE IF NOT EXISTS Category (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
-            color_id INTEGER NOT NULL,
-            emoji TEXT NOT NULL,
-            FOREIGN KEY(color_id) REFERENCES Color(id)
+            color TEXT,
+            emoji TEXT
          )",
         [],
     )?;
@@ -48,8 +40,7 @@ pub fn create_tables() -> Result<()> {
         "CREATE TABLE IF NOT EXISTS Tag (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
-            color_id INTEGER NOT NULL,
-            FOREIGN KEY(color_id) REFERENCES Color(id)
+            color TEXT
          )",
         [],
     )?;
@@ -86,26 +77,16 @@ pub fn create_tables() -> Result<()> {
 }
 
 
+
 pub fn add_task(task:models::Task) -> Result<()>{
     let con = Connection::open("todocli.db")?;
-    // let color_id = add_color(&con);
     // let status_id = add_status(&con, task);
-    let status_id = get_status(&con, &task.status);
-    // println!("{}", color_id);
+    // let status_id = get_status(&con, &task.status);
+    let category = add_category(&con, &task.category);
+    println!("{:?}", category);
     Ok(())
 
 }
-
-
-pub fn add_color(con : &Connection) -> i64{
-    con.execute("INSERT INTO Color (Red, Green, Blue) VALUES (?1, ?2, ?3);", [255, 255, 255])
-    .expect("Troubel Creating COlor");
-
-    con.last_insert_rowid()
-
-    
-}
-
 
 pub fn add_status(con: &Connection, task: models::Task) -> Result<i64, rusqlite::Error> {
     let status: Result<usize, rusqlite::Error> = con.execute(
@@ -119,12 +100,12 @@ pub fn add_status(con: &Connection, task: models::Task) -> Result<i64, rusqlite:
     }
 }
 
-pub fn get_status(con: &Connection, status: &models::Status) -> Result<i32> {
+pub fn get_status(con: &Connection, status: &models::Status) -> Result<i64> {
     let mut stmt = con.prepare("SELECT id FROM Status WHERE UPPER(title) == UPPER(?1)")?;
     let mut rows = stmt.query(&[&status.title])?;
 
     if let Some(row) = rows.next()? {
-        let id: i32 = row.get(0)?;
+        let id: i64 = row.get(0)?;
         println!("{}",id);
         Ok(id)
     } else {
@@ -133,4 +114,15 @@ pub fn get_status(con: &Connection, status: &models::Status) -> Result<i32> {
     }
 }
 
+pub fn add_category(con: &Connection, category: &models::Category) -> Result<i64, rusqlite::Error>{
+    let category = con.execute(
+        "INSERT INTO Category (title, emoji, color) VALUES (?1,?2,?3)",
+        &[&category.title,&category.emoji, &category.color]
+    );
 
+    match category {
+        Ok(_) => Ok(con.last_insert_rowid()),
+        Err(err) => Err(err),
+    }
+
+}
