@@ -19,18 +19,18 @@ pub struct Tag{
     pub color: String,
 }
 
-// impl Tag{
-//     pub fn new(tags: Vec<String>) -> Vec<Tag>{
-//         let mut list: Vec<Tag> = Vec::new();
-//         for tag in tags{
-//             list.push(Tag{
-//                 title: tag,
-//                 color: "#323031",
-//             })
-//         }
-//         list
-//     } 
-// }
+impl Tag{
+    pub fn new(tags: Vec<String>) -> Vec<Tag>{
+        let mut list: Vec<Tag> = Vec::new();
+        for tag in tags{
+            list.push(Tag{
+                title: tag,
+                color: "#323031".to_string(),
+            })
+        }
+        list
+    } 
+}
 
 #[derive(Debug)]
 pub struct Task{
