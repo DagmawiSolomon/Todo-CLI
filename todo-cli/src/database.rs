@@ -12,17 +12,35 @@ pub fn create_tables() -> Result<()> {
     conn.execute(
         "CREATE TABLE IF NOT EXISTS Status (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL UNIQUE
-         )",
+            title TEXT NOT NULL UNIQUE,
+            color TEXT NOT NULL DEFAULT '#000000'
+        )",
         [],
     )?;
 
     conn.execute(
-        "INSERT OR IGNORE INTO Status (title) VALUES 
-        ('Pending'), 
-        ('Not Started'), 
-        ('In Progress'), 
-        ('Completed')",
+        "INSERT OR IGNORE INTO Status (title, color) VALUES
+        ('Pending','#FFA500'), 
+        ('Not Started','#808080'), 
+        ('In Progress', '#0000FF'), 
+        ('Completed', '#008000')",
+        [],
+    )?;
+
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS Priority (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL UNIQUE,
+            color TEXT NOT NULL DEFAULT '#000000' 
+        )",
+        [],
+    )?;
+
+    conn.execute(
+        "INSERT OR IGNORE INTO Priority (title, color) VALUES
+        ('High', '#FF0000'),
+        ('Medium', '#FFFF00'),
+        ('Low', '#00FF00')",
         [],
     )?;
 
@@ -32,7 +50,7 @@ pub fn create_tables() -> Result<()> {
             title TEXT NOT NULL,
             color TEXT,
             emoji TEXT
-         )",
+        )",
         [],
     )?;
 
@@ -41,7 +59,7 @@ pub fn create_tables() -> Result<()> {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
             color TEXT
-         )",
+        )",
         [],
     )?;
 
@@ -58,7 +76,7 @@ pub fn create_tables() -> Result<()> {
             category_id INTEGER NOT NULL,
             FOREIGN KEY(status_id) REFERENCES Status(id),
             FOREIGN KEY(category_id) REFERENCES Category(id)
-         )",
+        )",
         [],
     )?;
 
@@ -69,7 +87,7 @@ pub fn create_tables() -> Result<()> {
             PRIMARY KEY (task_id, tag_id),
             FOREIGN KEY (task_id) REFERENCES Task(id),
             FOREIGN KEY (tag_id) REFERENCES Tag(id)
-         )",
+        )",
         [],
     )?;
 
@@ -77,13 +95,12 @@ pub fn create_tables() -> Result<()> {
 }
 
 
-
 pub fn add_task(task:models::Task) -> Result<()>{
     let con = Connection::open("todocli.db")?;
     // let status_id = add_status(&con, task);
     // let status_id = get_status(&con, &task.status);
-    let category = add_category(&con, &task.category);
-    println!("{:?}", category);
+    //let category = add_category(&con, &task.category);
+    // println!("{:?}", category);
     Ok(())
 
 }
@@ -126,3 +143,4 @@ pub fn add_category(con: &Connection, category: &models::Category) -> Result<i64
     }
 
 }
+
