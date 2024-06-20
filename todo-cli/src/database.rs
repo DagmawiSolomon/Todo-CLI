@@ -1,5 +1,3 @@
-use core::task;
-
 use rusqlite::{ffi::Error, Connection, Result};
 use crate::models::{self, Category};
 
@@ -99,8 +97,8 @@ pub fn add_task(task:models::Task) -> Result<()>{
     let con = Connection::open("todocli.db")?;
     // let status_id = add_status(&con, task);
     // let status_id = get_status(&con, &task.status);
-    //let category = add_category(&con, &task.category);
-    // println!("{:?}", category);
+    let category = get_category(&con, &task.category);
+    println!("{:?}", category);
     Ok(())
 
 }
@@ -141,6 +139,23 @@ pub fn add_category(con: &Connection, category: &models::Category) -> Result<i64
         Ok(_) => Ok(con.last_insert_rowid()),
         Err(err) => Err(err),
     }
-
 }
 
+// add a check for null categories
+pub fn get_category(con: &Connection, category: &models::Category)  -> Result<i64>{
+    let mut stmt = con.prepare("SELECT id FROM category WHERE UPPER(title) = UPPER(?1)")?;
+    let mut rows = stmt.query(&[&category.title])?;
+
+    if let Some(row) = rows.next()? {
+        let id:i64 = row.get(0)?;
+        println!("{}", id);
+        Ok(id)
+    }
+    else{
+        Err(rusqlite::Error::QueryReturnedNoRows)
+    }
+}
+
+
+// TODO CREATE Functions Create, Retieve, Update and Delete instead of get_category
+// Create a test for each function
