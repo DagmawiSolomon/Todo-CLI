@@ -1,5 +1,3 @@
-use rusqlite::{Connection, Result};
-use colored::*;
 use chrono::Utc;
 use structopt::StructOpt;
 mod args;
