@@ -108,9 +108,14 @@ pub fn add_task(task:models::Task) -> Result<()>{
     Ok(())
 
 }
+
+fn create_placeholder(len: usize) -> String{
+    (1..=len).map(|i| format!("?{}", i)).collect::<Vec<_>>().join(",")
+}
+
 pub fn create(con: &Connection, table: &str, fields: Vec<&str>, params: &[&dyn ToSql]) -> Result<i64, rusqlite::Error>{
     let fields_list = fields.join(",");
-    let value_placeholders = (1..=params.len()).map(|i| format!("?{}", i)).collect::<Vec<_>>().join(",");
+    let value_placeholders = create_placeholder(params.len());
     let sql = format!("INSERT INTO {} ({}) VALUES ({})", table, fields_list, value_placeholders);
     let result = con.execute(&sql, params);
     match result {
@@ -118,6 +123,9 @@ pub fn create(con: &Connection, table: &str, fields: Vec<&str>, params: &[&dyn T
         Err(err) => Err(err),
     }
 }
+
+
+
 
 
 pub fn get_status(con: &Connection, status: &models::Status) -> Result<i64> {
