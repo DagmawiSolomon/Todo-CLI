@@ -108,19 +108,6 @@ pub fn add_task(task:models::Task) -> Result<()>{
     Ok(())
 
 }
-
-pub fn add_status(con: &Connection, task: models::Task) -> Result<i64, rusqlite::Error> {
-    let status: Result<usize, rusqlite::Error> = con.execute(
-        "INSERT INTO Status (title) VALUES (?1)",
-        &[&task.title],
-    );
-
-    match status {
-        Ok(_) => Ok(con.last_insert_rowid()),
-        Err(err) => Err(err),
-    }
-}
-
 pub fn add(con: &Connection, table: &str, fields: Vec<&str>, params: &[&dyn ToSql]) -> Result<i64, rusqlite::Error>{
     let fields_list = fields.join(",");
     let value_placeholders = (1..=params.len()).map(|i| format!("?{}", i)).collect::<Vec<_>>().join(",");
@@ -147,17 +134,6 @@ pub fn get_status(con: &Connection, status: &models::Status) -> Result<i64> {
     }
 }
 
-pub fn add_category(con: &Connection, category: &models::Category) -> Result<i64, rusqlite::Error>{
-    let category = con.execute(
-        "INSERT INTO Category (title, emoji, color) VALUES (?1,?2,?3)",
-        &[&category.title,&category.emoji, &category.color]
-    );
-
-    match category {
-        Ok(_) => Ok(con.last_insert_rowid()),
-        Err(err) => Err(err),
-    }
-}
 
 // add a check for null categories
 pub fn get_category(con: &Connection, category: &models::Category)  -> Result<i64>{
