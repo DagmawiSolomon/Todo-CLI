@@ -3,7 +3,7 @@ use chrono::{DateTime, Utc};
 #[derive(Debug)]
 pub struct Status{
     pub title:String,
-    // color: Color
+    pub color: String,
 }
 
 // pending inprogress Done 
