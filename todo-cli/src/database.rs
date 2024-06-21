@@ -104,11 +104,11 @@ pub fn add_task(task:models::Task) -> Result<()>{
     // let fields = vec!{"title","color"};
     // let values: &[&dyn ToSql] = params!{"Hello","#323031"};
     // let category = add(&con, "Category", fields, values);
-    let status = add(&con, "Status",vec!{"title","color"},params!(&task.status.title, &task.status.color));
+    let status = create(&con, "Status",vec!{"title","color"},params!(&task.status.title, &task.status.color));
     Ok(())
 
 }
-pub fn add(con: &Connection, table: &str, fields: Vec<&str>, params: &[&dyn ToSql]) -> Result<i64, rusqlite::Error>{
+pub fn create(con: &Connection, table: &str, fields: Vec<&str>, params: &[&dyn ToSql]) -> Result<i64, rusqlite::Error>{
     let fields_list = fields.join(",");
     let value_placeholders = (1..=params.len()).map(|i| format!("?{}", i)).collect::<Vec<_>>().join(",");
     let sql = format!("INSERT INTO {} ({}) VALUES ({})", table, fields_list, value_placeholders);
