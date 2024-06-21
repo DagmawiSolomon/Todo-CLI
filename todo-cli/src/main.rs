@@ -21,7 +21,8 @@ fn main() {
                     Some(x) => x,
                 },
                 status: models::Status{
-                    title: "Pending".to_string(),
+                    title: "Older".to_string(),
+                    color: "#323031".to_string(),
                 },
                 due_date: match due {
                     None => " ".to_string(),
