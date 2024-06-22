@@ -104,7 +104,9 @@ pub fn add_task(task:models::Task) -> Result<()>{
     // let fields = vec!{"title","color"};
     // let values: &[&dyn ToSql] = params!{"Hello","#323031"};
     // let category = add(&con, "Category", fields, values);
-    let status = create(&con, "Status",vec!{"title","color"},params!(&task.status.title, &task.status.color));
+    // let status = create(&con, "Status",vec!{"title","color"},params!(&task.status.title, &task.status.color));
+    let stat = retrieve(&con, "SELECT id FROM Status WHERE UPPER(title) == Upper('New')");
+    println!("{:?}",stat);
     Ok(())
 
 }
@@ -127,11 +129,9 @@ pub fn create(con: &Connection, table: &str, fields: Vec<&str>, params: &[&dyn T
 
 
 
-
-pub fn get_status(con: &Connection, status: &models::Status) -> Result<i64> {
-    let mut stmt = con.prepare("SELECT id FROM Status WHERE UPPER(title) == UPPER(?1)")?;
-    let mut rows = stmt.query(&[&status.title])?;
-
+pub fn retrieve(con: &Connection, sql: &str) -> Result<i64> {
+    let mut stmt = con.prepare(sql)?;
+    let mut rows = stmt.query([])?;
     if let Some(row) = rows.next()? {
         let id: i64 = row.get(0)?;
         println!("{}",id);
