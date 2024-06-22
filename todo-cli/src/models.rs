@@ -33,7 +33,7 @@ impl Tag{
 #[derive(Debug)]
 pub struct Task{
     pub title: String,
-    pub descripton: String,
+    pub description: String,
     pub created_at: String,
     pub last_updated: String,
     pub status: Status,
