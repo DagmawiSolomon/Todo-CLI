@@ -126,9 +126,6 @@ pub fn create(con: &Connection, table: &str, fields: Vec<&str>, params: &[&dyn T
     }
 }
 
-
-
-
 pub fn retrieve(con: &Connection, sql: &str) -> Result<i64> {
     let mut stmt = con.prepare(sql)?;
     let mut rows = stmt.query([])?;
@@ -141,6 +138,10 @@ pub fn retrieve(con: &Connection, sql: &str) -> Result<i64> {
         
     }
 }
+
+
+
+
 
 
 // add a check for null categories
