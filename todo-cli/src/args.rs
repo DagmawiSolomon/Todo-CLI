@@ -2,12 +2,12 @@ use structopt::StructOpt;
 
 #[derive(Debug, StructOpt)]
 pub enum Command {
-    add {
+    Add {
         #[structopt(help = "Description of the task")]
         task: String,
-        #[structopt(long, help = "Description of task")]
+        #[structopt(short="D", long, help = "Description of task")]
         description: Option<String>,
-        #[structopt(short, long, help = "Deadline of task")]
+        #[structopt(short, long, help = "Deadline of task (dd-mm-yyyy) or tommorow")]
         due: Option<String>,
         #[structopt(short, long, help = "Level of priority: low, medium, high")]
         priority: Option<String>,
@@ -18,7 +18,7 @@ pub enum Command {
         #[structopt(short, long, help = "Tags for task")]
         tags: Vec<String>,
     },
-    list {
+    List {
         #[structopt(short, long)]
         due: Option<String>,
         #[structopt(short, long)]
@@ -31,19 +31,19 @@ pub enum Command {
         priority: Option<String>,
         // title - contains starts with ends with
     },
-    sort{
+    Sort{
         #[structopt(short, long)]
         due: Option<String>,
         #[structopt(short, long)]
         title: Option<String>,
         
     },
-    status{
+    Status{
         id: Option<i64>,
         title: Option<String>,
         status: String,
     },
-    edit {
+    Edit {
         #[structopt(help = "ID of the task")]
         id: Option<i64>,
         #[structopt(help = "Description of the task")]
@@ -60,7 +60,7 @@ pub enum Command {
 }
 
 #[derive(Debug, StructOpt)]
-#[structopt(name="Fundamentals", author = "Dagmawi Solomon", about= "I am a simple CLI to teach you the fundamentals")]
+#[structopt(name="Fundamentals", author = "Dagmawi Solomon", about= "A simple cli todo app")]
 pub struct Args {
     #[structopt(subcommand)]
     pub commands: Command,
