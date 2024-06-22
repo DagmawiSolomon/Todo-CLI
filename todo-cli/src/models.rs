@@ -1,5 +1,3 @@
-use chrono::{DateTime, Utc};
-
 #[derive(Debug)]
 pub struct Status{
     pub title:String,
@@ -36,8 +34,8 @@ impl Tag{
 pub struct Task{
     pub title: String,
     pub descripton: String,
-    pub created_at: DateTime<Utc>,
-    pub last_updated: DateTime<Utc>,
+    pub created_at: String,
+    pub last_updated: String,
     pub status: Status,
     pub prority: String,
     pub due_date: String,
