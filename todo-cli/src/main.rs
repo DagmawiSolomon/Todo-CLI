@@ -13,10 +13,10 @@ fn main() {
 
     let args = args::Args::from_args();
     match args.commands {
-        args::Command::add {task,due,description,priority,category,emoji,tags} =>{
+        args::Command::Add {task,due,description,priority,category,emoji,tags} =>{
             let x = models::Task{
                 title: task,
-                descripton: match description{
+                description: match description{
                     None => " ".to_string(),
                     Some(x) => x,
                 },
@@ -28,8 +28,8 @@ fn main() {
                     None => " ".to_string(),
                     Some(x) => x,
                 },
-                created_at: Utc::now(),
-                last_updated: Utc::now(),
+                created_at: Utc::now().to_string(),
+                last_updated: Utc::now().to_string(),
                 prority: match priority {
                     None => " ".to_string(),
                     Some(x) => x,
