@@ -16,3 +16,4 @@ Cargo.lock
 todo.md
 *.db
 todocli;
+reflection.md
