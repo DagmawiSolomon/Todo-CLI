@@ -32,10 +32,10 @@ pub enum Command {
         // title - contains starts with ends with
     },
     Sort{
-        #[structopt(short, long)]
-        due: Option<String>,
-        #[structopt(short, long)]
-        title: Option<String>,
+        #[structopt(short, long, help="Sorts the tasks by due date")]
+        due: bool,
+        #[structopt(short, long, help="Sorts the tasks by title")]
+        title: bool,
         
     },
     Status{
