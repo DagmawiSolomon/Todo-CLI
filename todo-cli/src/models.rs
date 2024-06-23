@@ -1,3 +1,6 @@
+use std::fmt::{Debug, Display};
+use std::any::type_name;
+
 #[derive(Debug)]
 pub struct Status{
     pub title:String,
@@ -11,6 +14,7 @@ pub struct Category{
     pub color: String,
     pub emoji: String,
 }
+
 #[derive(Debug)]
 pub struct Tag{
     pub title: String,
@@ -38,7 +42,25 @@ pub struct Task{
     pub last_updated: String,
     pub status: Status,
     pub prority: String,
-    pub due_date: String,
+    pub due_date: String, // tommorow // next week // blank - todays date // yyyy-mm-dd
     pub category:Category,
     pub tags: Vec<Tag>,
 }
+
+
+pub trait Operations{
+
+    fn create(&self){}
+    fn get(){}
+    fn all(){}
+    fn sort(){}
+    fn filter(){}
+
+
+    fn update(){}
+    fn delete(){}
+
+}
+
+
+impl <T> Operations for T {}
