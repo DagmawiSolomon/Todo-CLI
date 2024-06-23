@@ -47,3 +47,20 @@ pub struct Task{
     pub tags: Vec<Tag>,
 }
 
+
+pub trait Operations{
+
+    fn create(&self){}
+    fn get(){}
+    fn all(){}
+    fn sort(){}
+    fn filter(){}
+
+
+    fn update(){}
+    fn delete(){}
+
+}
+
+
+impl <T> Operations for T {}

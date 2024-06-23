@@ -1,6 +1,7 @@
 use std::result;
 
-use rusqlite::{ffi::Error, Connection, Result, params, ToSql};
+use rusqlite::{ffi::Error, params, params_from_iter, Connection, Result, ToSql};
+use crate::models::Operations;
 use crate::models::{self, Category};
 
 pub fn create_tables() -> Result<()> {
@@ -105,15 +106,29 @@ pub fn add_task(task:models::Task) -> Result<()>{
     // let values: &[&dyn ToSql] = params!{"Hello","#323031"};
     // let category = add(&con, "Category", fields, values);
     // let status = create(&con, "Status",vec!{"title","color"},params!(&task.status.title, &task.status.color));
-    let stat = retrieve(&con, "SELECT id FROM Status WHERE UPPER(title) == Upper('New')");
-    println!("{:?}",stat);
+    // let stat = retrieve(&con, "SELECT id FROM Status WHERE UPPER(title) == Upper('New')");
+    
+    // let fields = vec!{"title","description","created_at", "last_updated", "priority", "due_date", "status_id", "category_id"};
+    // let status_id = create(&con,"Status",vec!{"title", "color"}, params!{task.status.title, task.status.color}).unwrap();
+    // let category_id = create(&con,"Category",vec!{"title", "color"}, params!{task.category.title, task.category.color}).unwrap();
+    // let values = params!{task.title, task.description, task.created_at, task.last_updated, task.prority, task.due_date, status_id, category_id};
+    // let task = create(&con, "Task", fields, values);
+
+    // let task = get_or_create(con, model);
+    // println!("{:?}",task);
+    let x = Category {
+        title: String::from("Some Title"),
+        color: String::from("Red"),
+        emoji: String::from("😊"),
+    };
+    x.create();
+
     Ok(())
 
 }
 
-fn create_placeholder(len: usize) -> String{
-    (1..=len).map(|i| format!("?{}", i)).collect::<Vec<_>>().join(",")
-}
+
+
 
 pub fn create(con: &Connection, table: &str, fields: Vec<&str>, params: &[&dyn ToSql]) -> Result<i64, rusqlite::Error>{
     let fields_list = fields.join(",");
@@ -124,6 +139,11 @@ pub fn create(con: &Connection, table: &str, fields: Vec<&str>, params: &[&dyn T
         Ok(_) => Ok(con.last_insert_rowid()),
         Err(err) => Err(err),
     }
+}
+
+
+fn create_placeholder(len: usize) -> String{
+    (1..=len).map(|i| format!("?{}", i)).collect::<Vec<_>>().join(",")
 }
 
 pub fn retrieve(con: &Connection, sql: &str) -> Result<i64> {
@@ -140,25 +160,12 @@ pub fn retrieve(con: &Connection, sql: &str) -> Result<i64> {
 }
 
 
+pub fn update(con:&Connection, sql: &str) -> Result<(), rusqlite::Error>{
+    let result = con.execute(sql, []);
 
-
-
-
-// add a check for null categories
-pub fn get_category(con: &Connection, category: &models::Category)  -> Result<i64>{
-    let mut stmt = con.prepare("SELECT id FROM category WHERE UPPER(title) = UPPER(?1)")?;
-    let mut rows = stmt.query(&[&category.title])?;
-
-    if let Some(row) = rows.next()? {
-        let id:i64 = row.get(0)?;
-        println!("{}", id);
-        Ok(id)
-    }
-    else{
-        Err(rusqlite::Error::QueryReturnedNoRows)
+    match result {
+        Ok(_) => Ok(()),
+        Err(err) => Err(err),
     }
 }
 
-
-// TODO CREATE Functions Create, Retieve, Update and Delete instead of get_category
-// Create a test for each function
