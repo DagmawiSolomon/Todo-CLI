@@ -121,7 +121,7 @@ pub fn add_task(task:models::Task) -> Result<()>{
         color: String::from("Red"),
         emoji: String::from("😊"),
     };
-    x.create();
+    x.create(&x);
 
     Ok(())
 
