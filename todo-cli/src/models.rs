@@ -49,18 +49,22 @@ pub struct Task{
 
 
 pub trait Operations{
+    type Item;
 
-    fn create(&self){}
+    fn create(&self, item: &Self::Item)  where
+    Self::Item: Debug,{
+        println!("{:#?}", item.);
+    }
     fn get(){}
     fn all(){}
     fn sort(){}
     fn filter(){}
-
-
     fn update(){}
     fn delete(){}
 
 }
 
 
-impl <T> Operations for T {}
+impl <T> Operations for T {
+    type Item = T;
+}
