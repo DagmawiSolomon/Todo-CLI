@@ -53,7 +53,7 @@ pub trait Operations{
 
     fn create(&self, item: &Self::Item)  where
     Self::Item: Debug,{
-        println!("{:#?}", item.);
+        println!("{:#?}", item);
     }
     fn get(){}
     fn all(){}
