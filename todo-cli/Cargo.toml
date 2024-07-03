@@ -1,9 +1,12 @@
+workspace = { members = ["macros"] }
+
 [package]
 name = "todo-cli"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+macros = { path = "./macros" }
 chrono = "0.4.38"
 colored = "2"
 rusqlite = "0.31.0"
