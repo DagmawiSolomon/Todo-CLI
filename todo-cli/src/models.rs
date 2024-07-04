@@ -7,7 +7,6 @@ pub struct Status{
     pub color: String,
 }
 
-// pending inprogress Done 
 #[derive(Debug)]
 pub struct Category{
     pub title:String,
