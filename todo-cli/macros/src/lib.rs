@@ -3,37 +3,27 @@ use quote::quote;
 use syn::Data;
 use proc_macro::TokenStream;
 
-#[proc_macro_derive(IntoStringHashMap)]
-pub fn derive_into_hash_map(item: TokenStream) -> TokenStream {
+#[proc_macro_derive(Create)]
+pub fn create(item: TokenStream) -> TokenStream {
     let input = syn::parse_macro_input!(item as syn::DeriveInput);
-
     let struct_identifier = &input.ident;
-
-    match &input.data {
-        Data::Struct(syn::DataStruct { fields, .. }) => {
-            let mut implementation = quote!{
-                let mut hash_map = std::collections::HashMap::<String, String>::new();
-            };
-
-            for field in fields {
-                let identifier = field.ident.as_ref().unwrap();
-                implementation.extend(quote!{
-                    hash_map.insert(stringify!(#identifier).to_string(), String::from(value.#identifier));
-                });
+    let expanded = quote!{
+        impl Create for #struct_identifier{
+            // INSERT INTO TABLE #name #fields VALUES #values;
+            fn get_fields(){}
+            fn get_name() -> &str{
+                stringify!(#struct_identifier).to_lowercase().as_str()
             }
-
-            quote! {
-                #[automatically_derived]
-                impl From<#struct_identifier> for std::collections::HashMap<String, String> {
-                    fn from(value: #struct_identifier) -> Self {
-                        #implementation
-
-                        hash_map
-                    }
-                }
+            fn get_value() {}
+            fn execute_query(){
+                // INSERT INTO #name #fields VALUES #values;
+                // let sql = format!("INSERT INTO {} {} VALUES {}", Self::get_name(), Self::get_fields(), Self::get_value());
+                // let con = database::get_connection();
+                // database::execute_query(&con, &sql);
             }
         }
-        _ => unimplemented!()
-    }.into()
+    };
+    TokenStream::from(expanded)
+
 }
 
