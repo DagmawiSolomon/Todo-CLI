@@ -5,10 +5,10 @@ mod models;
 mod database;
 
 use std::collections::HashMap;
-use macros::IntoStringHashMap;
+use macros::Create;
 
 
-#[derive(IntoStringHashMap)]
+#[derive(Create,Debug)]
 pub struct User {
     username: String,
     first_name: String,
@@ -21,9 +21,8 @@ fn main() {
         last_name: "Last".to_string(),
     };
 
-    let hash_map = HashMap::<String, String>::from(user);
 
-    dbg!(hash_map);
+    println!("{:?}",user);
     let create_dbtables = database::create_tables();
     match create_dbtables {
     Err(err) => panic!("Error creating database: {}", err),
