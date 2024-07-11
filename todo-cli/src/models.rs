@@ -1,7 +1,9 @@
 use std::fmt::Debug;
 use std::any::type_name;
+use rusqlite::{params, Connection, Result, ToSql};
+use macros::Create;
 
-#[derive(Debug)]
+#[derive(Debug, Create)]
 pub struct Status{
     pub title:String,
     pub color: String,
@@ -48,23 +50,8 @@ pub struct Task{
 }
 
 
-pub trait Operations{
-    type Item;
-
-    fn create(&self, item: &Self::Item)  where
-    Self::Item: Debug,{
-        println!("{:#?}", item);
-    }
-    fn get(){}
-    fn all(){}
-    fn sort(){}
-    fn filter(){}
-    fn update(){}
-    fn delete(){}
-
-}
-
-
-impl <T> Operations for T {
-    type Item = T;
+pub trait Create {
+    fn table_name() -> &'static str;
+    fn field_names() -> &'static str;
+    fn field_values(&self) -> Vec<&dyn rusqlite::ToSql>;
 }
