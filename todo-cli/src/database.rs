@@ -1,7 +1,6 @@
 use std::result;
 
 use rusqlite::{ffi::Error, params, params_from_iter, Connection, Result, ToSql};
-use crate::models::Operations;
 use crate::models::{self, Category};
 
 pub fn create_tables() -> Result<()> {
