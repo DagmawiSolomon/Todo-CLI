@@ -3,8 +3,10 @@ use structopt::StructOpt;
 mod args;
 mod models;
 mod database;
+
+
 fn main() {
-   
+
     let create_dbtables = database::create_tables();
     match create_dbtables {
     Err(err) => panic!("Error creating database: {}", err),

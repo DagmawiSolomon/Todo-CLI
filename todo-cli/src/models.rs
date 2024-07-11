@@ -1,7 +1,9 @@
 use std::fmt::Debug;
 use std::any::type_name;
+use rusqlite::{params, Connection, Result, ToSql};
+use macros::Create;
 
-#[derive(Debug)]
+#[derive(Debug, Create)]
 pub struct Status{
     pub title:String,
     pub color: String,
@@ -46,4 +48,11 @@ pub struct Task{
     pub tags: Vec<Tag>,
 }
 
+
+
+pub trait Create {
+    fn table_name() -> &'static str;
+    fn field_names() -> &'static str;
+    fn field_values(&self) -> Vec<&dyn rusqlite::ToSql>;
+}
 
