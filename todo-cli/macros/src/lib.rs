@@ -1,29 +1,50 @@
 extern crate proc_macro;
-use quote::quote;
-use syn::Data;
 use proc_macro::TokenStream;
+use quote::quote;
+use syn::{parse_macro_input, DeriveInput, Fields, Data};
+
+
 
 #[proc_macro_derive(Create)]
-pub fn create(item: TokenStream) -> TokenStream {
-    let input = syn::parse_macro_input!(item as syn::DeriveInput);
+pub fn create_derive(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
     let struct_identifier = &input.ident;
-    let expanded = quote!{
-        impl Create for #struct_identifier{
-            // INSERT INTO TABLE #name #fields VALUES #values;
-            fn get_fields(){}
-            fn get_name() -> &str{
-                stringify!(#struct_identifier).to_lowercase().as_str()
+
+    let expanded = match &input.data {
+        Data::Struct(data_struct) => {
+            match &data_struct.fields {
+                Fields::Named(fields_named) => {
+                    let field_names: Vec<_> = fields_named.named.iter().map(|f| {
+                        let ident = f.ident.as_ref().unwrap().to_string();
+                        quote! { #ident }
+                    }).collect();
+
+                    let field_values: Vec<_> = fields_named.named.iter().map(|f| {
+                        let ident = f.ident.as_ref().unwrap();
+                        quote! { &self.#ident as &dyn rusqlite::ToSql }
+                    }).collect();
+
+                    quote! {
+                        impl Create for #struct_identifier {
+                            fn table_name() -> &'static str {
+                                stringify!(#struct_identifier).to_lowercase().as_str()
+                            }
+
+                            fn field_names() -> &'static str {
+                                Box::leak(format!("{}", stringify!(#(#field_names),*)).into_boxed_str())
+                            }
+
+                            fn field_values(&self) -> Vec<&dyn rusqlite::ToSql> {
+                                vec![#(#field_values),*]
+                            }
+                        }
+                    }
+                },
+                _ => panic!("Create can only be derived for structs with named fields"),
             }
-            fn get_value() {}
-            fn execute_query(){
-                // INSERT INTO #name #fields VALUES #values;
-                // let sql = format!("INSERT INTO {} {} VALUES {}", Self::get_name(), Self::get_fields(), Self::get_value());
-                // let con = database::get_connection();
-                // database::execute_query(&con, &sql);
-            }
-        }
+        },
+        _ => panic!("Create can only be derived for structs"),
     };
+
     TokenStream::from(expanded)
-
 }
-
