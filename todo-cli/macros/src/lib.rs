@@ -1,44 +1,50 @@
 extern crate proc_macro;
+extern crate rusqlite;
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, DeriveInput, Fields, Data};
-
-
+use rusqlite::{Connection, Result, params};
 
 #[proc_macro_derive(Create)]
-pub fn create_derive(input: TokenStream) -> TokenStream {
+pub fn create(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let struct_identifier = &input.ident;
-    let fields = match &input.data {
-        Data::Struct(data) => &data.fields,
-        _ => panic!("Create can only be derived for structs"),
-    };
-  
-   let mut field_printing = Vec::new();
 
-   
-   for field in fields {
-       let field_name = field.ident.as_ref().unwrap();
-       let print_code = quote! {
-           println!("Field '{}' has value '{:?}'", stringify!(#field_name), self.#field_name);
-       };
-       field_printing.push(print_code);
-   }
+    let sql_code = match input.data {
+        Data::Struct(ref data_struct) => {
+            let fields = match data_struct.fields {
+                Fields::Named(ref fields_named) => &fields_named.named,
+                _ => unimplemented!(),
+            };
 
-        
+            let field_names: Vec<_> = fields.iter().map(|f| f.ident.as_ref().unwrap()).collect();
+            let field_names_str: Vec<_> = field_names.iter().map(|f| f.to_string()).collect();
+            let field_values: Vec<_> = field_names.iter().map(|f| quote! { &self.#f }).collect();
 
-    
-    let expanded = quote! {
-        impl #struct_identifier{
-            pub fn create(self) -> Self{
-                #( #field_printing )*
+            let joined_field_names = field_names_str.join(",");
+            let placeholders = vec!["?"; field_names.len()].join(",");
 
-                self
+            quote! {
+                impl #struct_identifier {
+                    pub fn create(&self, con: &Connection) -> Result<i64> {
+                        let sql = format!(
+                            "INSERT INTO {} ({}) VALUES ({})",
+                            stringify!(#struct_identifier),
+                            #joined_field_names,
+                            #placeholders
+                        );
+
+                        let params = params![#(#field_values),*];
+                        match con.execute(&sql, params) {
+                            Ok(_) => Ok(con.last_insert_rowid()),
+                            Err(err) => Err(err),
+                        }
+                    }
+                }
             }
         }
+        _ => unimplemented!(),
     };
-    
-    TokenStream::from(expanded)
+
+    TokenStream::from(sql_code)
 }
-
-
