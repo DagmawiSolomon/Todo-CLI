@@ -9,14 +9,14 @@ pub struct Status{
     pub color: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Create)]
 pub struct Category{
     pub title:String,
     pub color: String,
     pub emoji: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Create)]
 pub struct Tag{
     pub title: String,
     pub color: String,
@@ -50,9 +50,4 @@ pub struct Task{
 
 
 
-pub trait Create {
-    fn table_name() -> &'static str;
-    fn field_names() -> &'static str;
-    fn field_values(&self) -> Vec<&dyn rusqlite::ToSql>;
-}
 
