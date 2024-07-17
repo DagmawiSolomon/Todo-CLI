@@ -1,8 +1,8 @@
 use std::fmt::Debug;
 use rusqlite::{params, Connection, Result};
-use macros::Create;
+use macros::{Create,Read};
 
-#[derive(Debug, Create)]
+#[derive(Debug, Create, Read)]
 pub struct Status{
     pub title:String,
     pub color: String,
