@@ -14,8 +14,10 @@ pub fn create(input: TokenStream) -> TokenStream {
         Data::Struct(ref data_struct) => {
             let fields = match data_struct.fields {
                 Fields::Named(ref fields_named) => &fields_named.named,
-                _ => unimplemented!(),
+                _ => panic!("Unsupported data type")
             };
+
+            
 
             let field_names: Vec<_> = fields.iter().map(|f| f.ident.as_ref().unwrap()).collect();
             let field_names_str: Vec<_> = field_names.iter().map(|f| f.to_string()).collect();
@@ -51,7 +53,22 @@ pub fn create(input: TokenStream) -> TokenStream {
 
 #[proc_macro_derive(Read)]
 pub fn read(input: TokenStream) -> TokenStream {
-    TokenStream::new()
+    let input = parse_macro_input!(input as DeriveInput);
+    let struct_identifier = &input.ident;
+
+    let sql_code = match input.data {
+        Data::Struct(ref data_struct) => {
+            println!("{:?}", data_struct);
+            quote!{
+                impl #struct_identifier {
+                    println!("Hello, world!");
+                }
+            }
+        }
+        _ => unimplemented!(),
+    };
+
+    TokenStream::from(sql_code)
 }
 
 #[proc_macro_derive(Update)]
