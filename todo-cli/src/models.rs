@@ -1,6 +1,5 @@
 use std::fmt::Debug;
-use std::any::type_name;
-use rusqlite::{params, Connection, Result, ToSql};
+use rusqlite::{params, Connection, Result};
 use macros::Create;
 
 #[derive(Debug, Create)]
