@@ -15,9 +15,7 @@ pub fn create(input: TokenStream) -> TokenStream {
             let fields = match data_struct.fields {
                 Fields::Named(ref fields_named) => &fields_named.named,
                 _ => panic!("Unsupported data type")
-            };
-
-            
+            };            
 
             let field_names: Vec<_> = fields.iter().map(|f| f.ident.as_ref().unwrap()).collect();
             let field_names_str: Vec<_> = field_names.iter().map(|f| f.to_string()).collect();
