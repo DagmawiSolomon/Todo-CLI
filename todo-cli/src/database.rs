@@ -1,7 +1,4 @@
-use std::result;
-
-use rusqlite::{ffi::Error, params, params_from_iter, Connection, Result, ToSql};
-use crate::models::{self, Category};
+use rusqlite::{Connection, Result};
 
 pub fn create_tables() -> Result<()> {
     let conn = Connection::open("todocli.db")?;
