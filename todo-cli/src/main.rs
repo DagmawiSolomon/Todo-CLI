@@ -13,7 +13,7 @@ fn main() {
         color: "#323031".to_string(),
     };
     let conn = Connection::open("todocli.db").unwrap();
-    let mystatus = mystatus.create(&conn);
+    // let mystatus = mystatus.create();
     println!("Hello:{:?}", mystatus);
     // mystatus.create()
     println!("{:?}",mystatus);
