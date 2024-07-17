@@ -48,3 +48,18 @@ pub fn create(input: TokenStream) -> TokenStream {
 
     TokenStream::from(sql_code)
 }
+
+#[proc_macro_derive(Read)]
+pub fn read(input: TokenStream) -> TokenStream {
+    TokenStream::new()
+}
+
+#[proc_macro_derive(Update)]
+pub fn update(input: TokenStream) -> TokenStream {
+    TokenStream::new()
+}
+
+#[proc_macro_derive(Delete)]
+pub fn delete(input: TokenStream) -> TokenStream {
+    TokenStream::new()
+}
