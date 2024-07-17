@@ -3,7 +3,7 @@ use structopt::StructOpt;
 mod args;
 mod models;
 mod database;
-use rusqlite::{ffi::Error, Connection, Result};
+use rusqlite::Connection;
 
 
 fn main() {
@@ -26,7 +26,7 @@ fn main() {
     let args = args::Args::from_args();
     match args.commands {
         args::Command::Add {task,due,description,priority,category,emoji,tags} =>{
-            let x = models::Task{
+            let _x: models::Task = models::Task{
                 title: task,
                 description: match description{
                     None => " ".to_string(),
