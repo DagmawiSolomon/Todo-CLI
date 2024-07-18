@@ -2,20 +2,20 @@ use std::fmt::Debug;
 use rusqlite::{params, Connection, Result};
 use macros::{Create,Read};
 
-#[derive(Debug, Create, Read)]
+#[derive(Debug)]
 pub struct Status{
     pub title:String,
     pub color: String,
 }
 
-#[derive(Debug, Create)]
+#[derive(Debug)]
 pub struct Category{
     pub title:String,
     pub color: String,
     pub emoji: String,
 }
 
-#[derive(Debug, Create)]
+#[derive(Debug)]
 pub struct Tag{
     pub title: String,
     pub color: String,
