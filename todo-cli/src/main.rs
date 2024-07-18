@@ -3,20 +3,11 @@ use structopt::StructOpt;
 mod args;
 mod models;
 mod database;
-use rusqlite::Connection;
+
 
 
 fn main() {
 
-    let mystatus = models::Status{
-        title: "Jxsrew".to_string(),
-        color: "#323031".to_string(),
-    };
-    let conn = Connection::open("todocli.db").unwrap();
-    // let mystatus = mystatus.create();
-    println!("Hello:{:?}", mystatus);
-    // mystatus.create()
-    println!("{:?}",mystatus);
     let create_dbtables = database::create_tables();
     match create_dbtables {
     Err(err) => panic!("Error creating database: {}", err),
