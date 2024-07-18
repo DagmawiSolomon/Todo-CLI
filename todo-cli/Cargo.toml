@@ -12,3 +12,4 @@ chrono = "0.4.38"
 colored = "2"
 rusqlite = "0.31.0"
 structopt = "0.3.26"
+diesel_cli = { version = "2.2.1", default-features = false, features = ["sqlite"] }
