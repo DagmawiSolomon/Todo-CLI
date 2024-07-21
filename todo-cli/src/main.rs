@@ -1,8 +1,16 @@
+extern crate diesel;
+extern crate dotenvy;
+
+
 use chrono::Utc;
 use structopt::StructOpt;
 mod args;
 mod models;
 mod database;
+
+use diesel::prelude::*;
+use dotenvy::dotenv;
+use std::env;
 
 
 
