@@ -1,52 +1,36 @@
-use std::fmt::Debug;
+use diesel::{Queryable, Insertable};
+use serde::{Deserialize, Serialize};
+use crate::schema::{tasks, tags, task_tags};
+use chrono::NaiveDateTime;
 
-
-
-#[derive(Debug)]
-pub struct Status{
-    pub title:String,
-    pub color: String,
+#[derive(Debug, Queryable, Insertable, Serialize, Deserialize)]
+#[table_name = "tasks"]
+pub struct Task {
+    pub id: Option<i32>, // Change to Option<i32> for auto-increment handling
+    pub title: String,
+    pub description: Option<String>,
+    pub created_at: NaiveDateTime,
+    pub last_updated: NaiveDateTime,
+    pub status_title: Option<String>,
+    pub status_color: Option<String>,
+    pub priority: Option<String>,
+    pub due_date: Option<String>,
+    pub category_title: Option<String>,
+    pub category_color: Option<String>,
+    pub category_emoji: Option<String>,
 }
 
-#[derive(Debug)]
-pub struct Category{
-    pub title:String,
-    pub color: String,
-    pub emoji: String,
-}
-
-#[derive(Debug)]
-pub struct Tag{
+#[derive(Debug, Queryable, Insertable, Serialize, Deserialize)]
+#[table_name = "tags"]
+pub struct Tag {
+    pub id: Option<i32>, // Option<i32> if auto-incremented
     pub title: String,
     pub color: String,
 }
 
-impl Tag{
-    pub fn new(tags: Vec<String>) -> Vec<Tag>{
-        let mut list: Vec<Tag> = Vec::new();
-        for tag in tags{
-            list.push(Tag{
-                title: tag,
-                color: "#323031".to_string(),
-            })
-        }
-        list
-    } 
+#[derive(Debug, Queryable, Insertable, Serialize, Deserialize)]
+#[table_name = "task_tags"]
+pub struct TaskTag {
+    pub task_id: i32,
+    pub tag_id: i32,
 }
-
-#[derive(Debug)]
-pub struct Task{
-    pub title: String,
-    pub description: String,
-    pub created_at: String,
-    pub last_updated: String,
-    pub status: Status,
-    pub prority: String,
-    pub due_date: String, // tommorow // next week // blank - todays date // yyyy-mm-dd
-    pub category:Category,
-    pub tags: Vec<Tag>,
-}
-
-
-
-
